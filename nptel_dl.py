@@ -12,9 +12,17 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+from os.path import getsize
 from bs4 import BeautifulSoup
 import requests
 from clint.textui import progress
+
+def checkPresence(path , size):
+    if size > getsize(path):
+        return  False
+    else:
+        return True
+
 
 choice = int()
 def save_file(url, name):
@@ -27,10 +35,13 @@ def save_file(url, name):
     r = requests.get(url, stream=True)
     with open(path, 'wb') as f:
         total_length = int(r.headers.get('content-length'))
-        for chunk in progress.bar(r.iter_content(chunk_size=1024), expected_size=(total_length/1024) + 1): 
-            if chunk:
-                f.write(chunk)
-                f.flush()
+        if not checkPresence(path, total_length):
+            for chunk in progress.bar(r.iter_content(chunk_size=1024), expected_size=(total_length/1024) + 1): 
+                if chunk:
+                    f.write(chunk)
+                    f.flush()
+        else:
+            print("File names {} is already present! Skipping over to next file.".format(path))
 
 nptel_url = input("Enter the NPTEL video download URL: ")
 file = requests.get(nptel_url).content
