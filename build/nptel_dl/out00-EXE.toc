@@ -1,9 +1,0 @@
-('/home/utkarshbhatt/Desktop/Testing/Python/nptel_dl/dist/nptel_dl',
- True,
- False,
- None,
- None,
- [],
- None,
- False,
- 1537012097)
