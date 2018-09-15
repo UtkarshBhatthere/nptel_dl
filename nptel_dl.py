@@ -43,7 +43,7 @@ def save_file(url, name):
         else:
             print("File names {} is already present! Skipping over to next file.".format(path))
 
-nptel_url = input("Enter the NPTEL video download URL: ")
+nptel_url = raw_input("Enter the NPTEL video download URL: ")
 file = requests.get(nptel_url).content
 soup = BeautifulSoup(file, 'html.parser')
 choice = int(input("Enter the format to save the file in \n1 for MP4 \n2 for 3GP and \n3 for FLV \nIf you're confused enter 1\nInput : "))
