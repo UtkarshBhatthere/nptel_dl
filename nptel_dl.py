@@ -12,14 +12,19 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from os.path import getsize
+import os
 from bs4 import BeautifulSoup
 import requests
 from clint.textui import progress
 
 def checkPresence(path , size):
-    if size > getsize(path):
-        return  False
+    if os.path.isfile(path):
+        if size > os.path.getsize(path):
+            print("Lecture downloaded earlier is of smaller size ({}KB vs {}KB)".format(os.path.getsize(path)/(8*1024), size/1024))
+            return True;
+        else:
+            print("Lecture already downloaded")
+            return  False;
     else:
         return True
 
@@ -33,15 +38,13 @@ def save_file(url, name):
     elif(choice is 3):
         path = name+".flv"
     r = requests.get(url, stream=True)
-    with open(path, 'wb') as f:
-        total_length = int(r.headers.get('content-length'))
-        if not checkPresence(path, total_length):
+    total_length = int(r.headers.get('content-length'))
+    if checkPresence(path, total_length):
+        with open(path, 'wb') as f:
             for chunk in progress.bar(r.iter_content(chunk_size=1024), expected_size=(total_length/1024) + 1): 
                 if chunk:
                     f.write(chunk)
                     f.flush()
-        else:
-            print("File names {} is already present! Skipping over to next file.".format(path))
 
 nptel_url = raw_input("Enter the NPTEL video download URL: ")
 file = requests.get(nptel_url).content
